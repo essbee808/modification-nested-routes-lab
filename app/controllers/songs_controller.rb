@@ -25,14 +25,23 @@ class SongsController < ApplicationController
   end
 
   def new
-    @song = Song.new
+    #binding.pry
+    @song = Song.new(artist_id: params[:artist_id])
+      
+    #check if artist is real
+    if params[:artist_id] && !Artist.exists?(params[:artist_id])
+      redirect_to artists_path
+    else
+      @song = Artist.new(artist_id: params[:artist_id])
+    end
   end
 
   def create
+    binding.pry
     @song = Song.new(song_params)
 
     if @song.save
-      redirect_to @song
+      redirect_to artist_song_path(@artist, @song)
     else
       render :new
     end
